@@ -4,8 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Supplier Duo Berkah</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  function editTransaksi(index) {
+    const trx = data[index];
+    document.getElementById('tanggal').value = trx.tanggal;
+    document.getElementById('keterangan').value = trx.keterangan;
+    document.getElementById('kategori').value = trx.kategori;
+    document.getElementById('metode').value = trx.metode;
+    document.getElementById('kredit').value = trx.kredit;
+    document.getElementById('debet').value = trx.debet;
+    data.splice(index, 1);
+    tampilkanData();
+    updateCharts();
+  }
+
+  function hapusTransaksi(index) {
+    if (confirm('Hapus transaksi ini?')) {
+      data.splice(index, 1);
+      tampilkanData();
+      updateCharts();
+    }
+  }
+
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+  function editTransaksi(index) {
+    const trx = data[index];
+    document.getElementById('tanggal').value = trx.tanggal;
+    document.getElementById('keterangan').value = trx.keterangan;
+    document.getElementById('kategori').value = trx.kategori;
+    document.getElementById('metode').value = trx.metode;
+    document.getElementById('kredit').value = trx.kredit;
+    document.getElementById('debet').value = trx.debet;
+    data.splice(index, 1);
+    tampilkanData();
+    updateCharts();
+  }
+
+  function hapusTransaksi(index) {
+    if (confirm('Hapus transaksi ini?')) {
+      data.splice(index, 1);
+      tampilkanData();
+      updateCharts();
+    }
+  }
+
+</script>
   <style>
     :root {
       --primary: #28a745;
@@ -133,7 +177,9 @@
       <option>EDC</option>
     </select>
     <input type="number" id="kredit" placeholder="Kredit (Rp)" />
-    <input type="number" id="debet" placeholder="Debet (Rp)" />
+    <input type="text" id="jenisBarang" placeholder="Jenis Barang" required />
+<input type="number" id="jumlahBarang" placeholder="Jumlah Barang" required />
+<input type="number" id="debet" placeholder="Debet (Rp)" />
     <button type="submit">Simpan</button>
   </form>
   <div class="controls">
@@ -148,9 +194,9 @@
         <th>Keterangan</th>
         <th>Kategori</th>
         <th>Metode</th>
-        <th>Kredit (Rp)</th>
+        <th>Jenis Barang</th><th>Jumlah Barang</th><th>Kredit (Rp)</th>
         <th>Debet (Rp)</th>
-        <th>Saldo (Rp)</th>
+        <th>Saldo (Rp)</th><th>Aksi</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -175,8 +221,10 @@
     const kredit = parseInt(document.getElementById('kredit').value || 0);
     const debet = parseInt(document.getElementById('debet').value || 0);
     const saldoSebelumnya = data.length ? data[data.length - 1].saldo : 0;
+    const jenisBarang = document.getElementById('jenisBarang').value;
+    const jumlahBarang = parseInt(document.getElementById('jumlahBarang').value);
     const saldo = saldoSebelumnya + kredit - debet;
-    data.push({ tanggal, keterangan, kategori, metode, kredit, debet, saldo });
+    data.push({ tanggal, keterangan, kategori, metode, jenisBarang, jumlahBarang, kredit, debet, saldo });
     e.target.reset();
     tampilkanData();
     updateCharts();
@@ -199,9 +247,9 @@
             <td>${item.keterangan}</td>
             <td>${item.kategori}</td>
             <td>${item.metode}</td>
-            <td class="currency">${formatter.format(item.kredit)}</td>
+            <td>${item.jenisBarang}</td><td>${item.jumlahBarang}</td><td class="currency">${formatter.format(item.kredit)}</td>
             <td class="currency">${formatter.format(item.debet)}</td>
-            <td class="currency">${formatter.format(item.saldo)}</td>
+            <td class="currency">${formatter.format(item.saldo)}</td>     <td><button onclick='editTransaksi(${item.no - 1})'>Edit</button>     <button onclick='hapusTransaksi(${item.no - 1})'>Hapus</button></td>
           </tr>`;
           tbody.innerHTML += row;
         });
@@ -253,6 +301,28 @@
       }
     });
   }
+
+  function editTransaksi(index) {
+    const trx = data[index];
+    document.getElementById('tanggal').value = trx.tanggal;
+    document.getElementById('keterangan').value = trx.keterangan;
+    document.getElementById('kategori').value = trx.kategori;
+    document.getElementById('metode').value = trx.metode;
+    document.getElementById('kredit').value = trx.kredit;
+    document.getElementById('debet').value = trx.debet;
+    data.splice(index, 1);
+    tampilkanData();
+    updateCharts();
+  }
+
+  function hapusTransaksi(index) {
+    if (confirm('Hapus transaksi ini?')) {
+      data.splice(index, 1);
+      tampilkanData();
+      updateCharts();
+    }
+  }
+
 </script>
 </body>
 </html>
