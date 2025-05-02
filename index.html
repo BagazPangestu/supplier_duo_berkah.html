@@ -7,104 +7,165 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+    :root {
+      --primary: #28a745;
+      --secondary: #f8f9fa;
+      --dark: #343a40;
+      --light: #ffffff;
+      --accent: #ffc107;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 10px;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
+      background-color: var(--secondary);
+      color: var(--dark);
     }
-    h1, h3 { color: #2c3e50; margin: 10px 0; }
+
+    header {
+      background-color: var(--primary);
+      padding: 20px;
+      text-align: center;
+      color: var(--light);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    form, .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
     input, select, button {
-      padding: 8px;
-      margin: 4px 2px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       font-size: 14px;
-      width: 100%;
-      max-width: 180px;
-      box-sizing: border-box;
+      flex: 1 1 180px;
     }
+
+    button {
+      background-color: var(--primary);
+      color: var(--light);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 14px;
+      background: var(--light);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
     th, td {
-      border: 1px solid #ddd;
-      padding: 6px;
+      padding: 10px;
       text-align: left;
     }
+
     th {
-      background-color: #2c3e50;
-      color: white;
+      background-color: var(--dark);
+      color: var(--light);
     }
-    .currency { text-align: right; }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
+
+    tr:nth-child(even) {
+      background-color: #f1f1f1;
     }
+
+    .currency {
+      text-align: right;
+      font-weight: 500;
+    }
+
     canvas {
-      max-width: 100%;
-      margin: 20px 0;
+      margin-top: 20px;
+      background: var(--light);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-
-<h1>Supplier Duo Berkah</h1>
-
-<h3>Input Transaksi</h3>
-<form id="form-transaksi" class="controls">
-  <input type="date" id="tanggal" required />
-  <input type="text" id="keterangan" placeholder="Keterangan" required />
-  <select id="kategori">
-    <option>Belanja Sayur</option>
-    <option>Transport</option>
-    <option>Operasional</option>
-    <option>Lain-lain</option>
-  </select>
-  <select id="metode">
-    <option>Tunai</option>
-    <option>Transfer</option>
-    <option>QRIS</option>
-    <option>EDC</option>
-  </select>
-  <input type="number" id="kredit" placeholder="Kredit (Rp)" />
-  <input type="number" id="debet" placeholder="Debet (Rp)" />
-  <button type="submit">Simpan</button>
-</form>
-
-<div class="controls">
-  <input type="text" id="filter" placeholder="Cari transaksi..." />
-  <button onclick="exportToExcel()">Download Excel</button>
-</div>
-
-<table id="tabel-transaksi">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>Tanggal</th>
-      <th>Keterangan</th>
-      <th>Kategori</th>
-      <th>Metode</th>
-      <th>Kredit (Rp)</th>
-      <th>Debet (Rp)</th>
-      <th>Saldo (Rp)</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<h3>Grafik Kategori</h3>
-<canvas id="pieChart"></canvas>
-
-<h3>Grafik Saldo Harian</h3>
-<canvas id="lineChart"></canvas>
-
+<header>
+  <h1>Supplier Duo Berkah</h1>
+</header>
+<main>
+  <h3>Input Transaksi</h3>
+  <form id="form-transaksi">
+    <input type="date" id="tanggal" required />
+    <input type="text" id="keterangan" placeholder="Keterangan" required />
+    <select id="kategori">
+      <option>Belanja Sayur</option>
+      <option>Transport</option>
+      <option>Operasional</option>
+      <option>Lain-lain</option>
+    </select>
+    <select id="metode">
+      <option>Tunai</option>
+      <option>Transfer</option>
+      <option>QRIS</option>
+      <option>EDC</option>
+    </select>
+    <input type="number" id="kredit" placeholder="Kredit (Rp)" />
+    <input type="number" id="debet" placeholder="Debet (Rp)" />
+    <button type="submit">Simpan</button>
+  </form>
+  <div class="controls">
+    <input type="text" id="filter" placeholder="Cari transaksi..." />
+    <button onclick="exportToExcel()">Download Excel</button>
+  </div>
+  <table id="tabel-transaksi">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Tanggal</th>
+        <th>Keterangan</th>
+        <th>Kategori</th>
+        <th>Metode</th>
+        <th>Kredit (Rp)</th>
+        <th>Debet (Rp)</th>
+        <th>Saldo (Rp)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <h3>Grafik Kategori</h3>
+  <canvas id="pieChart"></canvas>
+  <h3>Grafik Saldo Harian</h3>
+  <canvas id="lineChart"></canvas>
+  <footer>
+    &copy; 2025 Supplier Duo Berkah. Dibuat dengan ❤️.
+  </footer>
+</main>
 <script>
   let data = [];
   const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
-
   document.getElementById('form-transaksi').addEventListener('submit', e => {
     e.preventDefault();
     const tanggal = document.getElementById('tanggal').value;
@@ -115,74 +176,55 @@
     const debet = parseInt(document.getElementById('debet').value || 0);
     const saldoSebelumnya = data.length ? data[data.length - 1].saldo : 0;
     const saldo = saldoSebelumnya + kredit - debet;
-
     data.push({ tanggal, keterangan, kategori, metode, kredit, debet, saldo });
     e.target.reset();
     tampilkanData();
     updateCharts();
   });
-
   document.getElementById('filter').addEventListener('input', tampilkanData);
-
   function tampilkanData() {
     const tbody = document.querySelector('#tabel-transaksi tbody');
     tbody.innerHTML = '';
     const filter = document.getElementById('filter').value.toLowerCase();
-
-    data
-      .map((item, i) => ({ ...item, no: i + 1 }))
-      .filter(item =>
-        item.keterangan.toLowerCase().includes(filter) ||
-        item.kategori.toLowerCase().includes(filter) ||
-        item.tanggal.toLowerCase().includes(filter)
-      )
-      .forEach(item => {
-        const row = `<tr>
-          <td>${item.no}</td>
-          <td>${item.tanggal}</td>
-          <td>${item.keterangan}</td>
-          <td>${item.kategori}</td>
-          <td>${item.metode}</td>
-          <td class="currency">${formatter.format(item.kredit)}</td>
-          <td class="currency">${formatter.format(item.debet)}</td>
-          <td class="currency">${formatter.format(item.saldo)}</td>
-        </tr>`;
-        tbody.innerHTML += row;
-      });
+    data.map((item, i) => ({ ...item, no: i + 1 }))
+        .filter(item =>
+          item.keterangan.toLowerCase().includes(filter) ||
+          item.kategori.toLowerCase().includes(filter) ||
+          item.tanggal.toLowerCase().includes(filter)
+        )
+        .forEach(item => {
+          const row = `<tr>
+            <td>${item.no}</td>
+            <td>${item.tanggal}</td>
+            <td>${item.keterangan}</td>
+            <td>${item.kategori}</td>
+            <td>${item.metode}</td>
+            <td class="currency">${formatter.format(item.kredit)}</td>
+            <td class="currency">${formatter.format(item.debet)}</td>
+            <td class="currency">${formatter.format(item.saldo)}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
   }
-
   function exportToExcel() {
     const wsData = [["No", "Tanggal", "Keterangan", "Kategori", "Metode", "Kredit", "Debet", "Saldo"]];
     data.forEach((item, i) => {
-      wsData.push([
-        i + 1,
-        item.tanggal,
-        item.keterangan,
-        item.kategori,
-        item.metode,
-        item.kredit,
-        item.debet,
-        item.saldo
-      ]);
+      wsData.push([i + 1, item.tanggal, item.keterangan, item.kategori, item.metode, item.kredit, item.debet, item.saldo]);
     });
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     XLSX.utils.book_append_sheet(wb, ws, "Transaksi");
     XLSX.writeFile(wb, "supplier_duo_berkah.xlsx");
   }
-
   let pieChart, lineChart;
-
   function updateCharts() {
     const kategoriMap = {};
     data.forEach(d => {
       if (!kategoriMap[d.kategori]) kategoriMap[d.kategori] = 0;
       kategoriMap[d.kategori] += d.debet;
     });
-
     const pieLabels = Object.keys(kategoriMap);
     const pieValues = Object.values(kategoriMap);
-
     if (pieChart) pieChart.destroy();
     pieChart = new Chart(document.getElementById('pieChart'), {
       type: 'pie',
@@ -194,10 +236,8 @@
         }]
       }
     });
-
     const dates = data.map(d => d.tanggal);
     const saldos = data.map(d => d.saldo);
-
     if (lineChart) lineChart.destroy();
     lineChart = new Chart(document.getElementById('lineChart'), {
       type: 'line',
@@ -214,6 +254,5 @@
     });
   }
 </script>
-
 </body>
 </html>
